@@ -1,0 +1,162 @@
+\documentclass[10.5pt,a4paper]{jsarticle}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\usepackage[final]{listings}
+\usepackage{color}
+\lstset{
+  language=fortran,
+  basicstyle=\ttfamily\scriptsize,
+  commentstyle={\ttfamily \color[cmyk]{0,1,1,0}},
+  keywordstyle={\bfseries \color[cmyk]{1,1,0,0}},
+  stringstyle={\ttfamily \color[cmyk]{1,0,1,0.5}},
+  stepnumber=1,
+  numberstyle=\ttfamily,
+  breaklines=true,
+  breakindent=20pt,
+  frame=tblr,
+  framesep=4pt,
+  tabsize=2
+}
+
+\newcommand{\figref}[1]{図\ref{#1}}
+\newcommand{\tabref}[1]{表\ref{#1}}
+\newcommand{\secref}[1]{\ref{#1}節}
+
+\title{データ構造とアルゴリズム実験レポート\\課題：\textless 課題名\textgreater}
+\author{\textless 291811319\textgreater \textless 4クラス\textgreater \textless 永崎遼太\textgreater}
+\date{締切日：\textless 正式な締切日\textgreater\\提出日：\textless 実際の提出日\textgreater}
+
+\begin{document}
+\maketitle
+
+\section{必須課題}
+
+この課題では，教科書リスト1-3 (p.4) の「線形探索による配列データの探索」に基づいたJavaプログラムLinearSearch.java，教科書リスト1-6 (p.8) の「2分探索による配列データの探索」に基づいたJavaプログラムBinarySearch.javaを作成し，作成したプログラムのリストおよび実行結果を示した．
+
+\subsection{LinearSearch.javaの作成}
+\subsubsection{実装の方針}\label{sec:ls_impl_policy}
+まず，\texttt{LinearSearch}クラスを定義し，線形探索による配列データの探索を実行するための機能を\texttt{linear\_search}メソッドとして，線形探索が実行されているかを確認するための機能を\texttt{main}メソッドとして，クラス内にそれぞれ実装した．このように，機能単位でメソッドを分割することによって，コードのメンテナンス性と可読性が向上する．また，\texttt{main}メソッドは，配列の長さ\texttt{n}と探索の対象となる整数型データ\texttt{d}をコマンドライン引数で渡すことによって動作する．このため，配列の長さと探索データに応じた探索時間の変化を調べるための実験が容易にできるようになった．配列の初期化では，\texttt{linear\_search}メソッドのデバッガビリティを考慮して，A[0]に1，A[1]に2，A[2]に3，...，A[n-1] に\texttt{n}を格納し，値が1ずつ離れた要素が昇順にソートされているようにした．
+
+\subsubsection{実装コードおよびコードの説明}\label{sec:ls_impl_code}
+
+\begin{figure}[t]
+  \begin{center}
+   \lstinputlisting[language=java,numbers=left]{code/LinearSearch.java}
+   \caption{LinearSearch.javaのソースコード}
+   \label{code:LinearSearch}
+  \end{center}
+ \end{figure}
+
+\figref{code:LinearSearch}に，LinearSearch.javaのソースコードを示す．\secref{sec:ls_impl_policy}で述べた，\texttt{linear\_search}メソッドと\texttt{main}メソッドは，それぞれ8$\sim$13行目，16$\sim$48行目の部分に相当する．
+
+\texttt{linear\_search}メソッドは，探索データ\texttt{d}を線形探索アルゴリズムで探索し，配列\texttt{A}内に\texttt{d}が存在するならば\texttt{true}，存在しないならば\texttt{false}をboolean型の値で返す．8行目で，探索を実行するための配列\texttt{A}，探索データ\texttt{d}，配列の長さ\texttt{n}を受け取るための仮引数を宣言し，9$\sim$11行目の\texttt{for}ループで，データ\texttt{d}をA[0]から順に探索し，配列\texttt{A}に\texttt{d}が存在するかどうかを調べている．そして，データを発見すれば (10行目の\texttt{if}文の条件に合致すれば)，boolean型の\texttt{true}を返し，データを発見できなければ (\texttt{for}ループが\texttt{i == n}まで回って終了するならば)，11行目でboolean型の\texttt{false}を返す．
+
+\texttt{main}メソッドは，\texttt{linear\_search}メソッドのテストケースとして機能する．配列の長さ\texttt{n}および探索データ\texttt{d}は，コマンドライン引数によってセットされ，ソースコードの22，23行目がそれに相当する．セットされた配列の長さ\texttt{n}に基づいて，配列\texttt{A}を25行目で宣言し，28行目で配列を初期化している．その後，31行目で\texttt{linear\_search}メソッドを呼び出し，その際に配列\texttt{A}，探索データ\texttt{d}，配列の長さ\texttt{n}を\texttt{linear\_search}メソッドに渡すことによって線形探索を実行し，データが配列内に存在するかどうかを示す結果をboolean型の変数\texttt{rslt}に格納している．そして，\texttt{rslt}の値に基づいて，34行目の\texttt{if}文の条件に合致する (データが存在する) ならば，34行目の\texttt{println()}メソッドを実行し，データが存在しないならば，35行目の\texttt{println()}メソッドを実行する．なお，配列の中身を全て表示する機能も\texttt{main}メソッドに実装されており，38$\sim$46行目の部分がそれに相当する．第3コマンドライン引数を\texttt{v}とセットすると，40行目の\texttt{for}ループによって配列の全要素を標準出力し，\texttt{v}以外がセットされると，44行目の\texttt{exit(1)}を実行してLinearSearch.javaをエラー終了させる．第3コマンドライン引数をセットしない場合は，データが存在する，もしくは存在しないことを標準出力 (34，35行目) し，38$\sim$46行目の部分をスキップする．このため，\texttt{main}メソッドに渡せるコマンドライン引数の数は2個以上4個未満とし，そのスクリーニングを18行目で実行している．
+
+\subsubsection{実行結果}\label{sec:ls_code_exec}
+
+まず，LinearSearch.javaを以下のコマンドでコンパイルする．
+\begin{verbatim}
+-------------------------------------
+$ javac -g -verbose LinearSearch.java
+-------------------------------------
+\end{verbatim}
+ここで，\texttt{-g}はデバッグ情報の付加させるためのオプション，\texttt{-verbose}はコンパイルの詳細な出力を表示させるためのオプションである．コンパイルが成功するとLinearSearch.classが生成され，その後以下のコマンドを入力することによって，プログラムを実行できる．
+\begin{verbatim}
+-------------------------------------
+$ java LinearSearch 10 5 v
+Data found: 5
+1 2 3 4 5 6 7 8 9 10
+-------------------------------------
+\end{verbatim}
+
+第1コマンドライン引数の10，第2コマンドライン引数の5は，それぞれ配列の長さ\texttt{n}，探索データ\texttt{d}に相当する．すなわち，このプログラムは長さ10の配列\texttt{A}の中から，5を線形探索によって探索する処理を実行した結果，その値が配列内に存在することを標準出力している．\secref{sec:ls_impl_code}で述べたように，\texttt{v}が第3コマンドライン引数にセットされているため，一番最後の行にて配列の全要素が標準出力されている．これにより，データの5が配列内に存在することが視覚的に分かる．
+
+次は，配列の長さを10のままにし，探索データを変化させてみる．ここでは，配列内に存在しないデータである11をコマンドライン引数にセットし，プログラムの挙動を観察する．
+\begin{verbatim}
+-------------------------------------
+$ java LinearSearch 10 11 v
+Sorry. Data not found: 11
+1 2 3 4 5 6 7 8 9 10
+-------------------------------------
+\end{verbatim}
+今回は，長さ10の配列\texttt{A}の中から11を線形探索したが，データが配列内に存在せず (\figref{code:LinearSearch}の9行目の\texttt{for}ループが回りきった)，その結果を標準出力している．この例でも，\texttt{v}が第3コマンドライン引数にセットされているため，一番最後の行にて配列の全要素が標準出力されている．これにより，データの11が配列内に存在しないことが視覚的に分かり，「線形探索による配列データの探索」に基づいたJavaプログラムLinearSearch.javaが正しく実装されていることを確認できる．最後に，線形探索により配列内からデータを発見する・発見できなかった場合のプログラムの挙動を\figref{fig:LinearSearch}に示す．
+
+\begin{figure}[t]
+ \centering
+ \begin{minipage}{0.95\linewidth}
+  \includegraphics[width=\textwidth]{fig/LinearSearch.eps}
+  \caption{LinearSearch.javaの挙動の図式化．(a) 線形探索により配列内からデータを発見する，(b) 発見できなかった場合のプログラムの挙動を示している．}
+  \label{fig:LinearSearch}
+ \end{minipage}
+\end{figure}
+
+\subsubsection{考察}
+今回の実装では，探索対象のデータ型は整数型としたが，float型，double型といった整数型以外の型にも，線形探索アルゴリズムを適用することが可能である．それは，\texttt{for}ループを回して配列の中身をシーケンシャルに見ながら対象データを探すというアルゴリズムであることから，要素の型と対象データの型を揃えておけば，たとえString型であっても探索することが可能であるためである．また，A[i]の探索とA[i-1]の探索は互いに独立なため，OpenMPを用いた並列化による処理速度の改善も期待できる．そして，非常にシンプルなアルゴリズムであるため，アルゴリズム自体を論理回路としてハードウェア的に実装するのも容易であると考えられる．
+
+\subsection{BinarySearch.javaの作成}
+
+\begin{figure}[t]
+  \begin{center}
+   \lstinputlisting[language=java,numbers=left]{code/BinarySearch.java}
+   \caption{BinarySearch.javaのソースコード}
+   \label{code:BinarySearch}
+  \end{center}
+ \end{figure}
+
+\subsubsection{実装の方針}\label{sec:bs_impl_policy}
+実装の方針は，LinearSearch.javaと同様である．\texttt{BinarySearch}クラスを定義し，2分探索による配列データの探索を実行するための機能を\texttt{binary\_search}メソッドとして，2分探索が実行されているかを確認するための機能を\texttt{main}メソッドとして，クラス内にそれぞれ実装した．すなわち，\texttt{linear\_search}メソッドを改変するだけで，BinarySearch.javaは作成可能である．これは，LinearSearch.javaの実装において，機能単位でメソッドを分割することによってコードのメンテナンス性を向上させたことによる恩恵を受けている．また，LinearSearch.javaと同様に，\texttt{main}メソッドは，配列の長さ\texttt{n}と探索対象とする整数型データ\texttt{d}をコマンドライン引数で渡すことによって動作し，配列の初期化では，A[0]に1，A[1]に2，A[2]に3，...，A[n-1]に\texttt{n}を格納した．これにより，BinarySearch.javaでもLinearSearch.javaと同様の実験および探索アルゴリズムのデバッグができるようになった．また，2分探索はデータが昇順 (あるいは降順) にソートされた配列を用いる探索アルゴリズムであるため，配列の初期値をそのようにしている．ソートを必要とする理由は後述する．
+
+\subsubsection{実装コードおよびコードの説明}
+
+\figref{code:BinarySearch}に，BinarySearch.javaのソースコードを示す．\secref{sec:bs_impl_policy}で述べた，\texttt{binary\_search}メソッドと\texttt{main}メソッドは，それぞれ8$\sim$20行目，23$\sim$55行の部分に相当する．
+
+\texttt{binary\_search}メソッドは，探索データ\texttt{d}を2分探索アルゴリズムで探索し，配列\texttt{A}内に\texttt{d}が存在するならば\texttt{true}，存在しないならば\texttt{false}をboolean型の値で返す．8行目で，配列\texttt{A}，探索データ\texttt{d}，配列の長さ\texttt{n}を受け取るための仮引数を宣言しており，この部分は\texttt{linear\_search}メソッドと同様である．9行目と10行目にて，配列の0番目のインデックスとn-1番目のインデックスを，それぞれ変数\texttt{l}と変数\texttt{h}に格納している．この変数\texttt{l}と変数\texttt{h}は，探索範囲を示す境界として機能する (変数\texttt{l}に格納されているインデックスから変数\texttt{h}に格納されているインデックスまでを探索範囲とする)．12行目にて，探索範囲の中間地点を示すインデックスを計算し，変数\texttt{m}にその結果を格納している．そして，13行目の\texttt{if}文の条件に合致する (探索範囲の中間地点のデータが探索データと一致する) 場合，boolean型の\texttt{true}を返す．合致しない場合は，15行目の\texttt{if}文の条件によって，探索範囲が変更される．すなわち，探索範囲の中間地点のデータ\texttt{A[m]}と探索データ\texttt{d}の大小関係を比較し，\texttt{d}が\texttt{A[m]}よりも小さければ，\texttt{d}は探索範囲の中間地点を示すインデックス\texttt{m}よりもインデックスが小さくなる範囲に存在するということになるため，探索範囲の右端として機能している変数\texttt{h}に\texttt{m-1}を代入して，探索範囲を\texttt{l}から\texttt{m-1}に狭める (15行目)．逆に，\texttt{d}が\texttt{A[m]}よりも大きければ，\texttt{d}は探索範囲の中間地点を示すインデックス\texttt{m}よりもインデックスが大きくなる範囲に存在するということになる．したがって，探索範囲の左端として機能している変数\texttt{l}に\texttt{m+1}を代入して，探索範囲を\texttt{m+1}から\texttt{h}に狭める (16行目)．このように，12$\sim$16行目の処理を繰り返すことによって，探索範囲を$n/2$，$n/4$，$n/8$，と狭めていき，狭める段階で探索データを発見 (13行目)，もしくは狭め終えた時にデータを発見 (18行目) する．狭め終えた時にデータを発見できなければ，配列内に探索データは存在しないということになるので，19行目でboolean型の\texttt{false}を返す．この大小関係の比較結果に基づいた探索範囲の縮小処理のために，配列\texttt{A}のデータは探索処理の前にソート (この場合は昇順ソート) されていることが前提となる．
+
+\texttt{main}メソッドについては，\secref{sec:ls_impl_code}で述べた\texttt{main}メソッドと同様の機能であるため，それについての説明は割愛する．
+
+\subsubsection{実行結果}
+
+\secref{sec:ls_code_exec}で述べたコンパイル方法と同様に，BinarySearch.javaを\texttt{javac}コマンドでコンパイルし，BinarySearch.classを生成する．その後，以下のコマンドを入力することによって，BinarySearch.javaのプログラムを実行する．
+\begin{verbatim}
+-------------------------------------
+$ java BinarySearch 10 8 v
+Data found: 8
+1 2 3 4 5 6 7 8 9 10
+-------------------------------------
+\end{verbatim}
+\secref{sec:ls_code_exec}と同様に，第1コマンドライン引数の10，第2コマンドライン引数の8は，第3コマンドライン引数の\texttt{v}は，それぞれ配列の長さ\texttt{n}，探索データ\texttt{d}，配列の全要素を標準出力させるためのオプションに相当する．すなわち，長さ10の配列\texttt{A}の中から，8を2分探索アルゴリズムで探索し，データが配列内に存在していることを標準出力している．また，\texttt{v}オプションによって，一番最後の行にて配列の全要素が標準出力されている．これにより，データの8が配列内に存在しており，それが2分探索アルゴリズムによって発見されたことが視覚的に分かる．
+
+次は，配列の長さを10のままにし，探索データを変化させてみる．ここでは，配列内に存在しないデータである11をコマンドライン引数にセットし，プログラムの挙動を観察する．\\
+\begin{verbatim}
+-------------------------------------
+$ java BinarySearch 10 11 v
+Sorry. Data not found: 11
+1 2 3 4 5 6 7 8 9 10
+-------------------------------------
+\end{verbatim}
+今回は，長さ10の配列\texttt{A}の中から11を2分探索したが，データが配列内に存在せず (探索範囲を狭め終えた後の\texttt{if}文の条件 (18行目) に合致しなかった)，その結果を標準出力している．この例でも，\texttt{v}が第3コマンドライン引数にセットされているため，一番最後の行にて配列の全要素が標準出力されている．これにより，データの11が配列内に存在しないことが視覚的に分かり，「2分探索による配列データの探索」に基づいたJavaプログラムBinarySearch.javaが正しく実装されていることを確認できる．最後に，2分探索により配列内からデータを発見する・発見できなかった場合のプログラムの挙動を\figref{fig:BinarySearch}に示す．
+
+\begin{figure}[t]
+ \centering
+ \begin{minipage}{0.70\linewidth}
+  \includegraphics[width=\textwidth]{fig/BinarySearch.eps}
+  \caption{BinarySearch.javaの挙動の図式化．(a) 2分探索により配列内からデータを発見する，(b) 発見できなかった場合のプログラムの挙動を示している．}
+  \label{fig:BinarySearch}
+ \end{minipage}
+\end{figure}
+
+\subsubsection{考察}
+
+2分探索は線形探索と異なり，探索前に配列内のデータが昇順 (もしくは降順) にソートされている必要があるため，String型に適用するためには工夫が必要である．その一例としては，String型のデータを，文字コードを利用して一旦整数型に変換し，探索後に元に戻すというのが考えられる．また，線形探索ではOpenMPディレクティブを一行挿入 (\texttt{\#pragma omp parallel for}) するだけで，容易に並列化を施すことが可能だが，2分探索の場合は，配列をスレッド毎に分割し，その際にスレッド毎の変数\texttt{l}と\texttt{h}を計算する必要があるため，コードを多少変更する必要がある．そのため，並列化の実装コストは線形探索と比べて，やや高いと考えられる．アルゴリズムのハードウェア化についても，1. \texttt{m}を計算，2. \texttt{A[m]}が\texttt{d}と一致しているかチェック，3. 一致していないなら，\texttt{A[m]}と\texttt{d}で大小比較を行って探索範囲を変更するという，1$\sim$3の状態を制御するためのロジック (ステートマシン) を実装する必要があるため，線形探索と比べて実装コストが高く，かつハードウェアリソースを多く使用することが考えられる．このため，時間計算量については2分探索は線形探索より優れているが，その他の観点を考慮に入れた場合は，必ずしも2分探索は最適解であると言い切れない．線形探索と2分探索の時間計算量は発展課題にて述べる．
+
+\section{発展課題}
+
+この課題では，必須課題で作成したLinearSearch.java，BinarySearch.javaについて，それぞれの時間計算量を議論した．
+
+一般的に，時間計算量はループにおける繰り返し回数によって左右されると言っても良い．LinearSearch.javaでは，探索データが配列内に存在しない場合，配列データの個数$n$に対して，ループの繰り返し回数は$n$回となるため，計算量は$O(n)$である．データが配列内に存在する場合のループの繰り返し回数は，最小で1回，最大でn回となり，平均は約$n/2$回である．これも$n$がパラメータであることに変わりはないので，計算量は$O(n)$となる．すなわち，$n$を大きくするにつれて，探索時間は線形に増加する．
+
+一方，BinarySearch.javaでは，\figref{code:BinarySearch}における11行目の\texttt{while}ループを1回実行する毎に，探索範囲が$n/2$，$n/4$，$n/8$，...のように縮小していく．すなわち，ループの繰り返し回数は約$\log_{2}{n}$回となるので，計算量は$O(\log_{}{n})$となる．ただし，前述したように2分探索では探索前にソート処理が実行されていなければならないのに対し，線形探索では配列の要素を順にサーチするアルゴリズムであるため，特別な前処理を必要としない．つまり，ソート処理を含めた場合，ソート処理のアルゴリズムが最適化されていないと，探索自体の時間計算量は2分探索の方が線形探索と比べて優れているのにもかかわらず，線形探索の方が結果として高速であるというケースが起こりうる．このため，アルゴリズムの計算量の良し悪しだけではなく，アルゴリズムの前提条件や特性，そしてアルゴリズムを実行するハードウェアの性能をよく吟味して，最適解を選択することが重要であると主張し，この議論をまとめる．
+
+\end{document}
